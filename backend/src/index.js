@@ -7,6 +7,6 @@ app.use(cors());
 app.use(express.json());
 app.use(routes);
 
-app.listen('3000', (req, resp) => {
+app.listen('3001', (req, resp) => {
     console.log('Executando Backend...');
 });

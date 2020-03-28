@@ -8,10 +8,10 @@ const login = async (req, resp) => {
         
         if(!ongFromDB) throw 'ONG não Encontrada.';
     
-        return resp.status(201).send(ongFromDB);
+         resp.status(201).send(ongFromDB);
         
     } catch (error) {
-        resp.status(400).send(error);
+         resp.status(400).send(error); 
     }
 
 }

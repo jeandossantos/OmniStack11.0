@@ -7,13 +7,13 @@ const save = (req, resp) => {
 
     db('ongs').insert(ongs)
     .then(() => resp.status(201).send(ongs.id))
-    .catch(e => resp.status(500).send(e));
+    .catch(_ => resp.status(500).send("Erro inesperado"));
 }
 
 const getAll = (req, resp) => {
     db('ongs').select()
     .then(ongs => resp.status(200).json(ongs))
-    .catch(e => resp.status(500).json(e))
+    .catch(_ => resp.status(500).send("Erro inesperado"))
 }
 
 module.exports = { save, getAll };

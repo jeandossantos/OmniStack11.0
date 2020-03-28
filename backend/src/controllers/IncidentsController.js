@@ -3,10 +3,11 @@ const db = require('../database/db');
 const save = (req, resp) => {
     const incident = { ...req.body };
     incident.ong_id = req.headers.authorization;
+    console.log(incident)
 
     db('incidents').insert(incident)
     .then(() => resp.status(201).send())
-    .catch(e => resp.status(500).json(e))
+    .catch(_ => resp.status(500).send('Erro inesperado'))
 }
 
 const getAll = async (req, resp) => {
@@ -35,11 +36,11 @@ const getAll = async (req, resp) => {
 const remove = async (req, resp) => {
     if(!req.headers.authorization) return resp.status(401).send('Não Autorizado.');
 
-    const ongFromDB = await db('ongs').select('id').where({ id: req.headers.authorization });
+    const ongFromDB = await db('ongs').select('id').where({ id: req.headers.authorization }).first();
     
     console.log(ongFromDB);
 
-    if(Array.isArray(ongFromDB) && ongFromDB.length === 0) return resp.status(401).send('Não Autorizado2.');
+    if(!ongFromDB) return resp.status(401).send('Não Autorizado.');
 
     db('incidents').del().where({ id: req.params.id })
     .then(_ => resp.status(201).send())
@@ -47,9 +48,14 @@ const remove = async (req, resp) => {
 }
 
 const getByOng = (req, resp) => {
-    db('incidents').select().where({ ong_id: req.headers.authorization }).first()
-    .then(incident => resp.status(201).json(incident))
-    .catch(e => resp.status(500).send('Erro Interno'))
+
+    const id = req.headers.authorization;
+
+    db('incidents')
+        .select()
+        .where({ ong_id: id }).orderBy('id', 'desc')
+        .then(incidents => resp.json(incidents))
+        .catch(_ => resp.status(500).send())
 }
 
 module.exports = {save, getAll, remove , getByOng }
