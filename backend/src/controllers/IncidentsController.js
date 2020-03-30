@@ -1,9 +1,9 @@
 const db = require('../database/db');
 
 const save = (req, resp) => {
+    if(!req.headers.authorization) return resp.status(401).send()
     const incident = { ...req.body };
     incident.ong_id = req.headers.authorization;
-    console.log(incident)
 
     db('incidents').insert(incident)
     .then(() => resp.status(201).send())

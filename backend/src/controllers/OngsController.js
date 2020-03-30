@@ -1,9 +1,9 @@
 const db = require('../database/db');
-const crypto = require('crypto');
+const generateUniqueId = require('./utils/generateUniqueId');
 
 const save = (req, resp) => {
     const ongs = { ...req.body };
-    ongs.id = crypto.randomBytes(4).toString('HEX');
+    ongs.id = generateUniqueId();
 
     db('ongs').insert(ongs)
     .then(() => resp.status(201).send(ongs.id))
