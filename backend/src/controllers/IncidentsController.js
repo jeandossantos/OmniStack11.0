@@ -14,13 +14,14 @@ const getAll = async (req, resp) => {
 
     const page = req.query.page || 1;
     const count = await  db('incidents').count().first();
+    const limit = 5;
 
     resp.header('X-Total-Count', count['count(*)']);
 
     db('incidents')
     .join('ongs', 'ongs.id', "=", 'incidents.ong_id')
-    .limit(5)
-    .offset((page - 5) * 5)
+    .limit(limit)
+    .offset(page * limit - limit)
     .select([
         'incidents.*',
         'ongs.name',
@@ -29,6 +30,7 @@ const getAll = async (req, resp) => {
         'ongs.city',
         'ongs.uf'
     ])
+    .orderBy('id', 'desc')
     .then(incidents => resp.status(200).json(incidents))
     .catch(e => resp.status(500).json(e))
 }
